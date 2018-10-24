@@ -1,0 +1,159 @@
+\documentclass[11pt, a4paper, dvipdfmx]{jsarticle}
+    \usepackage{amsmath}
+    \usepackage{amsthm}
+    \usepackage[psamsfonts]{amssymb}
+    \usepackage{color}
+    \usepackage{ascmac}
+    \usepackage{amsfonts}
+    \usepackage{mathrsfs}
+    \usepackage{amssymb}
+    \usepackage{graphicx}
+    \usepackage{fancybox}
+    \usepackage{enumerate}
+    \usepackage{verbatim}
+    \usepackage{subfigure}
+    \usepackage{proof}
+    \usepackage{otf}
+ %
+    \theoremstyle{definition}
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %ここにないパッケージを入れる人は，必ずここに記載すること．
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %ここからはコード表です．
+    %
+   \newtheorem{Axiom}{公理}[section]
+    \newtheorem{Definition}[Axiom]{定義}
+    \newtheorem{Theorem}[Axiom]{定理}
+    \newtheorem{Proposition}[Axiom]{命題}
+    \newtheorem{Lemma}[Axiom]{補題}
+    \newtheorem{Corollary}[Axiom]{系}
+    \newtheorem{Example}[Axiom]{例}
+    \newtheorem{Claim}[Axiom]{主張}
+    \newtheorem{Property}[Axiom]{性質}
+    \newtheorem{Attention}[Axiom]{注意}
+    \newtheorem{Question}[Axiom]{問}
+    \newtheorem{Problem}[Axiom]{問題}
+    \newtheorem{Consideration}[Axiom]{考察}
+    \newtheorem{Alert}[Axiom]{警告}
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %
+    %定義や定理等に番号をつけたくない場合（例えば定理1.1等）は以下のコードを使ってください．
+    %但し，例えば\Axiom*{}としてしまうと番号が付いてしまうので，必ず　\begin{Axiom*}　\end{Axiom*}の形で使ってください．
+    \newtheorem*{Axiom*}{公理}
+    \newtheorem*{Definition*}{定義}
+    \newtheorem*{Theorem*}{定理}
+    \newtheorem*{Proposition*}{命題}
+    \newtheorem*{Lemma*}{補題}
+    \newtheorem*{Example*}{例}
+    \newtheorem*{Corollary*}{系}
+    \newtheorem*{Claim*}{主張}
+    \newtheorem*{Property*}{性質}
+    \newtheorem*{Attention*}{注意}
+    \newtheorem*{Question*}{問}
+    \newtheorem*{Problem*}{問題}
+    \newtheorem*{Consideration*}{考察}
+    \newtheorem*{Alert*}{警告}
+    \renewcommand{\proofname}{\bfseries Proof}
+
+    \newcommand{\A}{\bf 証明}
+    \newcommand{\B}{\it Proof}
+
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %英語で定義や定理を書きたい場合こっちのコードを使うこと．
+    \newtheorem{Axiom+}{Axiom}[section]
+    \newtheorem{Definition+}[Axiom+]{Definition}
+    \newtheorem{Theorem+}[Axiom+]{Theorem}
+    \newtheorem{Proposition+}[Axiom+]{Proposition}
+    \newtheorem{Lemma+}[Axiom+]{Lemma}
+    \newtheorem{Example+}[Axiom+]{Example}
+    \newtheorem{Corollary+}[Axiom+]{Corollary}
+    \newtheorem{Claim+}[Axiom+]{Claim}
+    \newtheorem{Property+}[Axiom+]{Property}
+    \newtheorem{Attention+}[Axiom+]{Attention}
+    \newtheorem{Question+}[Axiom+]{Question}
+    \newtheorem{Problem+}[Axiom+]{Problem}
+    \newtheorem{Consideration+}[Axiom+]{Consideration}
+    \newtheorem{Alert+}{Alert}
+    %\renewcommand{\proofname}{\bfseries 証明}
+    %
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %数
+    \newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\W}{{\cal W}}
+\newcommand{\cS}{{\cal S}}
+\newcommand{\Wpm}{W^{\pm}}
+\newcommand{\Wp}{W^{+}}
+\newcommand{\Wm}{W^{-}}
+\newcommand{\p}{\partial}
+\newcommand{\Dx}{D_{x}}
+\newcommand{\Dxi}{D_{\xi}}
+\newcommand{\lan}{\langle}
+\newcommand{\ran}{\rangle}
+\newcommand{\pal}{\parallel}
+\newcommand{\dip}{\displaystyle }
+\newcommand{\e}{\varepsilon}
+\newcommand{\dl}{\delta}
+\newcommand{\pphi}{\varphi}
+\newcommand{\ti}{\tilde}
+    \title{$Lebesgue$ $measure$ の構成}
+    \author{小泉　孝弥}
+    \date{}
+\begin{document}
+\maketitle
+%\thispagestyle{empty}
+\begin{abstract}
+理工学部数理科学科2回生の小泉孝弥です.\\来年度から確率論を学びたいということもあり、その前の復習も兼ねて、測度論のLebesgue測度の話を書こうと思います.
+\end{abstract}
+\section{集合論}
+測度論のお話をする前に必要な集合論の言葉を定義しておきます.
+\begin{Definition+}(写像)\\
+  $X, Y$を集合とする.
+  $f$が$A$の任意の要素を$B$の元にただ一つ対応させる操作のことを写像といい, $A$から$B$への写像であるということを
+  \begin{equation*}
+    f : A \to B
+  \end{equation*}
+  と表す.
+\end{Definition+}
+\begin{Definition+}
+  (単射)\\
+  $f$は$A$から$B$への写像であるとする.$f$が\\
+  \begin{equation*}
+    \forall x_{1}, x_{2}\in X, f(x_{1}) = f(x_{2}) \Longrightarrow x_{1} = x_{2}
+  \end{equation*}
+  を満たすとき$f$は単射であるという.
+\end{Definition+}
+\begin{Definition+}
+  (全射)\\
+  $f$は$A$から$B$への写像であるとする.$f$が
+  \begin{equation*}
+    \forall y \in Y, \exists x\in X ~s.t.~ y = f(x)
+  \end{equation*}
+  を満たすとき$f$は全射であるという.
+\end{Definition+}
+\begin{Definition+}
+  (全単射)\\
+  $f$は$A$から$B$への写像であるとする.
+  $f$が単射かつ全射であるとき$f$は全単射であるという.
+\end{Definition+}
+\begin{Definition+}(上限)\\
+  Aを集合とする.
+  $\alpha$がAの上限であるとは
+  \begin{equation*}
+    \forall x \in A, x \leq \alpha
+  \end{equation*}
+  \begin{equation*}
+    \forall \e > 0, x\in A~s.t.~ \alpha - \e < x
+  \end{equation*}
+を満たすことをいう.
+\end{Definition+}
+\begin{thebibliography}{9}
+  \bibitem {1}伊藤　清三, ルベーグ積分入門
+\end{thebibliography}
+\end{document}
