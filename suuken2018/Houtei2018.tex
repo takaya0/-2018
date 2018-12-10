@@ -1,0 +1,192 @@
+\documentclass[11pt, a4paper, dvipdfmx]{jsarticle}
+    \usepackage{amsmath}
+    \usepackage{amsthm}
+    \usepackage[psamsfonts]{amssymb}
+    \usepackage{color}
+    \usepackage{ascmac}
+    \usepackage{amsfonts}
+    \usepackage{mathrsfs}
+    \usepackage{amssymb}
+    \usepackage{graphicx}
+    \usepackage{fancybox}
+    \usepackage{enumerate}
+    \usepackage{verbatim}
+    \usepackage{subfigure}
+    \usepackage{proof}
+    \usepackage{listings}
+    \usepackage{otf}
+ %
+    \theoremstyle{definition}
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %ここにないパッケージを入れる人は，必ずここに記載すること．
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %ここからはコード表です．
+    %
+   \newtheorem{Axiom}{公理}[section]
+    \newtheorem{Definition}[Axiom]{定義}
+    \newtheorem{Theorem}[Axiom]{定理}
+    \newtheorem{Proposition}[Axiom]{命題}
+    \newtheorem{Lemma}[Axiom]{補題}
+    \newtheorem{Corollary}[Axiom]{系}
+    \newtheorem{Example}[Axiom]{例}
+    \newtheorem{Claim}[Axiom]{主張}
+    \newtheorem{Property}[Axiom]{性質}
+    \newtheorem{Attention}[Axiom]{注意}
+    \newtheorem{Question}[Axiom]{問}
+    \newtheorem{Problem}[Axiom]{問題}
+    \newtheorem{Consideration}[Axiom]{考察}
+    \newtheorem{Alert}[Axiom]{警告}
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %
+    %定義や定理等に番号をつけたくない場合（例えば定理1.1等）は以下のコードを使ってください．
+    %但し，例えば\Axiom*{}としてしまうと番号が付いてしまうので，必ず　\begin{Axiom*}　\end{Axiom*}の形で使ってください．
+    \newtheorem*{Axiom*}{公理}
+    \newtheorem*{Definition*}{定義}
+    \newtheorem*{Theorem*}{定理}
+    \newtheorem*{Proposition*}{命題}
+    \newtheorem*{Lemma*}{補題}
+    \newtheorem*{Example*}{例}
+    \newtheorem*{Corollary*}{系}
+    \newtheorem*{Claim*}{主張}
+    \newtheorem*{Property*}{性質}
+    \newtheorem*{Attention*}{注意}
+    \newtheorem*{Question*}{問}
+    \newtheorem*{Problem*}{問題}
+    \newtheorem*{Consideration*}{考察}
+    \newtheorem*{Alert*}{警告}
+    \renewcommand{\proofname}{\bfseries Proof}
+    
+    \newcommand{\A}{\bf 証明}
+    \newcommand{\B}{\it Proof}
+    
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %英語で定義や定理を書きたい場合こっちのコードを使うこと．
+    \newtheorem{Axiom+}{Axiom}[section]
+    \newtheorem{Definition+}[Axiom+]{Definition}
+    \newtheorem{Theorem+}[Axiom+]{Theorem}
+    \newtheorem{Proposition+}[Axiom+]{Proposition}
+    \newtheorem{Lemma+}[Axiom+]{Lemma}
+    \newtheorem{Example+}[Axiom+]{Example}
+    \newtheorem{Corollary+}[Axiom+]{Corollary}
+    \newtheorem{Claim+}[Axiom+]{Claim}
+    \newtheorem{Property+}[Axiom+]{Property}
+    \newtheorem{Attention+}[Axiom+]{Attention}
+    \newtheorem{Question+}[Axiom+]{Question}
+    \newtheorem{Problem+}[Axiom+]{Problem}
+    \newtheorem{Consideration+}[Axiom+]{Consideration}
+    \newtheorem{Alert+}{Alert}
+    %\renewcommand{\proofname}{\bfseries 証明}
+    %
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %数
+    \newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\W}{{\cal W}}
+\newcommand{\cS}{{\cal S}}
+\newcommand{\Wpm}{W^{\pm}}
+\newcommand{\Wp}{W^{+}}
+\newcommand{\Wm}{W^{-}}
+\newcommand{\p}{\partial}
+\newcommand{\Dx}{D_{x}}
+\newcommand{\Dxi}{D_{\xi}}
+\newcommand{\lan}{\langle}
+\newcommand{\ran}{\rangle}
+\newcommand{\pal}{\parallel}
+\newcommand{\dip}{\displaystyle }
+\newcommand{\e}{\varepsilon}
+\newcommand{\dl}{\delta}
+\newcommand{\pphi}{\varphi}
+\newcommand{\ti}{\tilde}
+    \title{Submodular function maximization and Greedy algorithm}
+    \author{yataka}
+    %\date{}
+\begin{document}
+\maketitle
+%ソースコードの設定
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+\section{はじめに}
+この方程では$V$は有限集合であるとする.
+\section{劣モジュラ関数}
+まず劣モジュラ関数を定義する.
+\begin{Definition+}(Discreate derivative)\\
+    $f$を集合関数とする. $S$を$V$の部分集合とし$e$を$V$の元とする. この時$f$の$S$での
+    Discreate derivativeを
+    \begin{align*}
+        \Delta_{f}(e | S) := f(S\cup\{e\}) - f(S)
+    \end{align*}
+    と定義する.
+\end{Definition+}
+\begin{Definition+}(Submodular function)\\
+    $f$を集合関数とする. $f$がSubmodular functionであるとは
+    \begin{align*}
+        \forall A, B\subset V, \forall e\in V,A\subset B かつe\in V - B\Longrightarrow \Delta_{f}(e | A)\leq\Delta_{f}(e | B)
+    \end{align*}
+    を満たすことをいう.
+\end{Definition+}
+\begin{Theorem+}$f$を集合関数とする. この時
+    \begin{enumerate}
+        \item $f$は Submodular function である.
+        \item $\forall A, B\subset V, f(A\cap B) + f(A\cup B)\leq f(A) + f(B)$ 
+    \end{enumerate}
+    は同値である.
+\end{Theorem+}
+まあ, ここまでよくわからない Submodular function というものを定義して来たが, 読者の中には
+「$V$は有限集合なんだから, $V$の要素を入っているか入っていないかで分けて全通り試せば良い.」 と思う人もいるかもしれない.
+実際にそれをC++で実装すると以下のようになる.
+\begin{lstlisting}[caption=C++のソースコード,label=ほげ]
+#include<iostream>
+#include<math.h>
+using namespace std;
+#define MAX_N 10
+int main(){
+    int f_V[MAX_N];
+    for(int i = 0;i < MAX_N; i++){
+        if(i % 3 ==0){
+            f_V[i] = -2 * i + 1; 
+        }else{
+            f_V[i] = 2 * i + 1; 
+        }
+    }
+    int sum[1024] = {0};
+    for(int i = 0; i < pow(2, MAX_N); i++){
+        for(int k = 0; k < MAX_N; k++){
+            if(i & 1<<k){
+                sum[i] += f_V[k];
+            }
+        }
+    }
+    for(int i = 0; i < 1024; i++){
+        cout << sum[i] << " ";
+    }
+    cout << endl;
+    return 0;
+}
+ \end{lstlisting}
+ このコードでは, $|V| = 10$の場合を考えて実装している. このように$|V|$が小さい場合であればこのような方法でも
+ 問題はない. しかしながら, $|V| = 10000$の場合はどうだろうか? 調べる候補の数は$2^{10}$から$2^{10000}$へと
+ 跳ね上がる. この量を全て調べ上げるのは現実的に不可能である.(100年とか待てるなら別ですが...)\\
+ というわけで, 集合関数$f$が最大となる$V$の部分集合$S$を効率に求めることが必要なのである.
+\end{document}
