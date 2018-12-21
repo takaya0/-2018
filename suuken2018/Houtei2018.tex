@@ -142,7 +142,7 @@
 \begin{Definition+}(Submodular function)\\
     $f$を集合関数とする. $f$がSubmodular functionであるとは
     \begin{align*}
-        \forall A, B\subset V, \forall e\in V,A\subset B かつe\in V - B\Longrightarrow \Delta_{f}(e | A)\leq\Delta_{f}(e | B)
+        \forall A, B\subset V, \forall e\in V,A\subset B かつe\in V - B\Longrightarrow \Delta_{f}(e | A)\geq\Delta_{f}(e | B)
     \end{align*}
     を満たすことをいう.
 \end{Definition+}
@@ -152,41 +152,134 @@
         \item $\forall A, B\subset V, f(A\cap B) + f(A\cup B)\leq f(A) + f(B)$ 
     \end{enumerate}
     は同値である.
+    \begin{proof}
+        1.$\implies$2.) 任意に$A, B\subset V$をとる. $A - B = \phi$の時, すなわち
+        $A\subset B$の時は$A\cap B = A$, $A\cup B = B$より成立するので, $A - B\neq\phi$の時を考える.
+        $| A - B| = m$とし$A - B = \{i_{1}, i_{2}, \cdots, i_{m}\}$とすると$A_{0} = A\cap B$, $B_{0} = B$として
+        $A_{k}, B_{k} (k\in\{1, 2, \cdots, m\})$を以下のように定義する.
+        \begin{align*}
+            A_{1} = A_{0}\cup\{i_{1}\}, ~~~~~ A_{2} = A_{0}\cup\{i_{1}, i_{2}\}, \cdots, ~~~~~ A_{m} = A_{0}\cup\{i_{1}, i_{2}, \cdots, i_{m}\}\\
+            B_{1} = B_{0}\cup\{i_{1}\}, ~~~~~ B_{2} = B_{0}\cup\{i_{1}, i_{2}\}, \cdots, ~~~~~ B_{m} = B_{0}\cup\{i_{1}, i_{2}, \cdots, i_{m}\}
+        \end{align*}
+        この時$A_{m} = A$, $B_{m} = A\cup B$である. また,
+        \begin{align*}
+            \forall k\in\{1, 2, \cdots, m\}, A_{k - 1}\subset B_{k-1}かつA_{k} = A_{k-1}\cup\{i_{k}\}かつB_{k} = B_{k-1}\cup\{i_{k}\}
+        \end{align*}
+        が成立するので1.より
+        \begin{align*}
+            \forall k\in\{1, 2, \cdots, m\}, f(A_{k}) - f(A_{k - 1})\geq f(B_{k}) - f(B_{k-1})
+        \end{align*}
+        が成立する. $k$についてこの不等式の両辺の和をとると, 
+        \begin{align*}
+            \sum_{k =1}^{m}\left(f(A_{k}) - f(A_{k - 1})\right)\geq\sum_{k =1}^{m}\left(f(B_{k}) - f(B_{k - 1})\right)
+        \end{align*}
+        両辺を計算すると
+        \begin{align*}
+            f(A_{m}) - f(A_{0})\geq f(B_{m}) - f(B_{0})
+        \end{align*}
+        となる. $A, B$は任意なので$A_{m} = A$, $B_{m} = A\cup B$, $B_{0} = B$より
+        \begin{align*}
+            \forall A, B\subset V, f(A\cap B) + f(A\cup B)\leq f(A) + f(B)
+        \end{align*}
+        が成立する.\\
+
+        2.$\implies$1.) 任意に$A, B\subset V$と$i\in V - B$を$A\subset B$となるようにとる. $A^{'} = A\cup \{i\}, B^{'} = B$とすると2.より
+        \begin{align*}
+            f(A^{'}) + f(B^{'})\geq f(A^{'}\cup B^{'}) + f(A^{'}\cap B^{'})
+        \end{align*}
+        が成立する. ここで$A^{'}\cup B^{'} = B\cup\{i\}$, $A^{'}\cap B^{'} = A$であることから
+        \begin{align*}
+            f(A^{'}) + f(B^{'})\geq f(B\cup\{i\}) + f(A)
+        \end{align*}
+        $A^{'}, B^{'}$の定義より
+        \begin{align*}
+            f(A\cup \{i\}) + f(B)\geq f(B\cup\{i\}) + f(A)
+        \end{align*}
+        式を整理すると
+        \begin{align*}
+            f(A\cup \{i\}) - f(A)\geq f(B\cup\{i\}) + f(B)
+        \end{align*}
+        したがって, $A, B\subset V$と$i\in V - B$は任意だったので,
+        \begin{align*}
+            \forall A, B\subset V, \forall e\in V,A\subset B かつe\in V - B\Longrightarrow \Delta_{f}(e | A)\geq\Delta_{f}(e | B)
+        \end{align*}
+        したがって, $f$は Submodular function である.
+    \end{proof}
 \end{Theorem+}
-まあ, ここまでよくわからない Submodular function というものを定義して来たが, 読者の中には
-「$V$は有限集合なんだから, $V$の要素を入っているか入っていないかで分けて全通り試せば良い.」 と思う人もいるかもしれない.
-実際にそれをC++で実装すると以下のようになる.
-\begin{lstlisting}[caption=C++のソースコード,label=ほげ]
-#include<iostream>
-#include<math.h>
-using namespace std;
-#define MAX_N 10
-int main(){
-    int f_V[MAX_N];
-    for(int i = 0;i < MAX_N; i++){
-        if(i % 3 ==0){
-            f_V[i] = -2 * i + 1; 
-        }else{
-            f_V[i] = 2 * i + 1; 
-        }
-    }
-    int sum[1024] = {0};
-    for(int i = 0; i < pow(2, MAX_N); i++){
-        for(int k = 0; k < MAX_N; k++){
-            if(i & 1<<k){
-                sum[i] += f_V[k];
-            }
-        }
-    }
-    for(int i = 0; i < 1024; i++){
-        cout << sum[i] << " ";
-    }
-    cout << endl;
-    return 0;
-}
- \end{lstlisting}
- このコードでは, $|V| = 10$の場合を考えて実装している. このように$|V|$が小さい場合であればこのような方法でも
- 問題はない. しかしながら, $|V| = 10000$の場合はどうだろうか? 調べる候補の数は$2^{10}$から$2^{10000}$へと
- 跳ね上がる. この量を全て調べ上げるのは現実的に不可能である.(100年とか待てるなら別ですが...)\\
- というわけで, 集合関数$f$が最大となる$V$の部分集合$S$を効率に求めることが必要なのである.
+\begin{Definition+}(Monotone)\\
+    $f$を集合関数とする. $f$が Monotone であるとは
+    \begin{align*}
+        \forall S, T\subset V, S\subset T\Longrightarrow f(S)\leq f(T)
+    \end{align*}
+    を満たすことを言う.
+\end{Definition+}
+\begin{Theorem+}
+    $f$を集合関数とする.このとき
+    \begin{enumerate}
+        \item $f$が Monotone である.
+        \item $\forall S\subset V, \forall e\in V, \Delta_{f}(e | S)\geq 0$
+    \end{enumerate}
+    は同値である.
+    \begin{proof}
+        まあなんか頑張って証明してください.
+    \end{proof}
+\end{Theorem+}
+\begin{Problem+}(読者への演習問題1)\\
+    {\bf Theorem 2.5.}を証明せよ.
+\end{Problem+}
+\begin{Definition+}(Monotone Submodular function)\\
+    集合関数$f$が Submodular かつ Monotone であるとき$f$を Monotone Submodular function　と言う.
+\end{Definition+}
+
+
+
+
+
+
+% まあ, ここまでよくわからない Submodular function というものを定義して来たが, 読者の中には
+% 「$V$は有限集合なんだから, $V$の要素を入っているか入っていないかで分けて全通り試せば良い.」 と思う人もいるかもしれない.
+% 実際にそれをC++で実装すると以下のようになる.
+% \begin{lstlisting}[caption=C++のソースコード,label=ほげ]
+% #include<iostream>
+% #include<math.h>
+% using namespace std;
+% #define MAX_N 10
+% int main(){
+%     int f_V[MAX_N];
+%     for(int i = 0;i < MAX_N; i++){
+%         if(i % 3 ==0){
+%             f_V[i] = -2 * i + 1; 
+%         }else{
+%             f_V[i] = 2 * i + 1; 
+%         }
+%     }
+%     int sum[1024] = {0};
+%     for(int i = 0; i < pow(2, MAX_N); i++){
+%         for(int k = 0; k < MAX_N; k++){
+%             if(i & 1<<k){
+%                 sum[i] += f_V[k];
+%             }
+%         }
+%     }
+%     for(int i = 0; i < 1024; i++){
+%         cout << sum[i] << " ";
+%     }
+%     cout << endl;
+%     return 0;
+% }
+%  \end{lstlisting}
+%  このコードでは, $|V| = 10$の場合を考えて実装している. このように$|V|$が小さい場合であればこのような方法でも
+%  問題はない. しかしながら, $|V| = 10000$の場合はどうだろうか? 調べる候補の数は$2^{10}$から$2^{10000}$へと
+%  跳ね上がる. この量を全て調べ上げるのは現実的に不可能である.(100年とか待てるなら別ですが...)\\
+%  というわけで, 集合関数$f$が最大となる$V$の部分集合$S$を効率に求めることが必要なのである.
+
+
+
+
+\begin{thebibliography}{10}
+    \bibitem{キー1} 劣モジュラ最適化と機械学習・河原 吉伸,  永野 清仁・2015
+    \bibitem{キー2} https://las.inf.ethz.ch/files/krause12survey.pdf・Andreas Krause, Daniel Golovin
+    \bibitem{キー3} https://www.openu.ac.il/personal\verb|_|sites/moran-feldman/publications/Handbook2018.pdf・Niv Buchbinder, Moran Feldman
+    \bibitem{キー4} https://repository.upenn.edu/cgi/viewcontent.cgi?article=2034\verb|&|context=cis\verb|_|reports・Jennifer Gillenwater
+  \end{thebibliography}
 \end{document}
