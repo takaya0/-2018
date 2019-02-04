@@ -104,8 +104,8 @@
 \newcommand{\pphi}{\varphi}
 \newcommand{\ti}{\tilde}
     \title{Submodular function maximization and Greedy algorithm}
-    \author{yataka}
-    %\date{}
+    \author{数理科学科 2回生 小泉 孝弥}
+    \date{}
 \begin{document}
 \maketitle
 %ソースコードの設定
@@ -127,10 +127,28 @@
   numbersep=1zw,
   lineskip=-0.5ex
 }
-\section{はじめに}
-この方程では$V$は有限集合であるとする.
-\section{劣モジュラ関数}
-まず劣モジュラ関数を定義する.
+\section{初めに}
+みなさんは「最適化問題 (Optimization Problem)」という言葉を聞いたことはないだろうか? 
+例えば, ナップザック問題(Knapsack Problem), 巡回セールスマン問題(Traveling Salesman Problem) それに加えて
+最近話題の機械学習(Machine Learning)も広い意味では最適化問題である. 今回の方程では「劣モジュラ性」という
+性質を持った関数の最適化問題を考えて行くことにする. この方程で仮定する知識は1回生レベルの「集合と写像」に関する知識である.\\ \indent
+ また, この方程では特に断りのない限り$V$を有限集合とし, 以下の定理は証明をせず用いる.
+ \begin{Theorem+}
+    $V$, $W$$\subset\R$を有限集合とし, $f$を$V$から$W$への写像とする. この時$f$には最大値が存在する.
+ \end{Theorem+}
+ \begin{Definition+}(argmax)\\
+     $V$, $W$$\subset\R$を集合とし, $f$を$V$から$W$への写像とする. この時の写像$f$の最大値を$\alpha$とする. この時
+     最大点集合$\mathop{\rm arg~max}\limits f$を以下のように定義する. 
+     \begin{align*}
+        \mathop{\rm arg~max}\limits f = \{x\in V~|~ f(x) = \alpha\}
+     \end{align*}
+    \end{Definition+}
+    また任意の有限集合$S$に対して$|S|$で集合$S$の要素数を表す.    
+\section{Submodular function}
+まず劣モジュラ関数を定義して行く.
+\begin{Definition+}(集合関数)\\
+   $f$をVの冪集合$2^{V} = \{S~|~S\subset V\}$から$\R$への写像とする. この時$f$を集合関数と呼ぶ.
+\end{Definition+}
 \begin{Definition+}(Discreate derivative)\\
     $f$を集合関数とする. $S$を$V$の部分集合とし$e$を$V$の元とする. この時$f$の$S$での
     Discreate derivativeを
@@ -221,57 +239,204 @@
     \end{enumerate}
     は同値である.
     \begin{proof}
-        まあなんか頑張って証明してください.
+        証明は読者への演習問題とする.
     \end{proof}
 \end{Theorem+}
 \begin{Problem+}(読者への演習問題1)\\
-    {\bf Theorem 2.5.}を証明せよ.
+    {\bf Theorem 2.6.}を証明せよ.
 \end{Problem+}
+\begin{Theorem+}
+    $f_{1}, f_{2}, f$を Submodular function . $\alpha$を正の実数とする. この時
+    \begin{enumerate}
+        \item $f_{1} + f_{2} $ は Submodular function.
+        \item $\alpha f$は Submodular function.
+    \end{enumerate}
+    が成立する.
+    \begin{proof}
+        任意に$V$の部分集合$A$, $B$と$V$の元$e$をとる. $A\subset B$, $e\in V - B$と仮定する.\\
+        1. $f_{1}$, $f_{2}$は Submodular function だから
+        \begin{align*}
+            \Delta_{f_{1}}(e|A)\geq \Delta_{f_{1}}(e|B)
+        \end{align*}
+        \begin{align*}
+            \Delta_{f_{2}}(e|A)\geq \Delta_{f_{2}}(e|B)
+        \end{align*}
+        が成立する. 両辺を足すと
+        \begin{align*}
+            \Delta_{f_{1}}(e|A) + \Delta_{f_{2}}(e|A)\geq \Delta_{f_{1}}(e|B) + \Delta_{f_{2}}(e|B)
+        \end{align*}
+        したがって
+        \begin{align*}
+            \Delta_{f_{1} + f_{2}}(e|A)\geq \Delta_{f_{1} + f_{2}}(e|B)
+        \end{align*}
+        したがって, $f_{1} + f_{2}$は Submodular function である.\\
+        2. $\alpha > 0$を任意にとる. $f$は Submodular function であるので
+        \begin{align*}
+            \Delta_{f}(e|A)\geq \Delta_{f}(e|B)
+        \end{align*}
+        両辺を$\alpha > 0$倍すると
+        \begin{align*}
+            \alpha\Delta_{f}(e|A)\geq \alpha\Delta_{f}(e|B)
+        \end{align*}
+        したがって
+        \begin{align*}
+            \Delta_{\alpha f}(e|A)\geq \Delta_{\alpha f}(e|B)
+        \end{align*}
+        したがって$\alpha f$ は Submodular function である.
+     \end{proof}
+\end{Theorem+}
 \begin{Definition+}(Monotone Submodular function)\\
     集合関数$f$が Submodular かつ Monotone であるとき$f$を Monotone Submodular function　と言う.
 \end{Definition+}
+\section{単調劣モジュラ関数最大化問題と貪欲法}
+この節では$f$を非負の単調劣モジュラ関数とする.
+\subsection{単調劣モジュラ関数最大化問題}
+ 前節では劣モジュラ関数の定義および様々な性質を述べてきた. この節での目的は単調劣モジュラ関数を
+ ある条件のもと最大化\footnote{ここでの最大化とは出来るだけ関数の最大値に近づくような手法のことであり, 実際に関数の最大値が出る保証はない.}するようなアルゴリズムを与えることである.
+ そして, この節では特に集合
+ \begin{align*}
+    \{ f(S)~|~S\subset V\text{ and }|S| \leq k\}\hspace{30pt} (0< k\leq |V|, k\in\N)
+ \end{align*} 
+ が最大値をとるときの$V$の部分集合$S$を見つけることが目標である(そのような$S$を最適解と呼ぶ). 
+ この問題をこの方程では単調劣モジュラ関数最大化問題(Submodular function maximization problem)と呼ぶことにする. 
+
+ \subsection{近似アルゴリズム}
+単調劣モジュラ関数最大化問題を解決するための手法について述べる. 
+まず, 最初に全探索アルゴリズムを考える. これは「$V$の各要素を
+含むか含まないかで探索する\footnote{実装はbit全探索というものをよく用いる}」アルゴリズムである. 
+このアルゴリズムであれば確実に解が出せるので単調劣モジュラ関数最大化問題を解決することができる. 
+しかしながら, このアルゴリズムでは$V$の部分集合全てを調べる必要があるため$2^{|V|}$回の計算を行う必要がある.(簡単のため$k = |V|$とした.)
+$y = 2^x$という関数は以下のグラフ1を見れば分かる通り$x$がある程度大きくなると$y$は非常な大きな値となる. 
+これではいくらコンピュータを用いたとしても解くのは不可能である. そこで単調劣モジュラ関数最大化問題の真の解を求めることを諦め
+近似解を求めるために「近似アルゴリズム」というものを利用する. 
+\begin{Theorem+}
+    単調劣モジュラ関数最大化問題には最適解が存在する.
+\begin{proof}
+    冒頭の定理より言える.
+\end{proof}
+これ以降単調劣モジュラ関数最大化問題の最適解を$S_{OPT}$と表記する.
+\end{Theorem+}
+\begin{Definition+}(近似アルゴリズム)\\
+    以下の2つのことを満たすアルゴリズム$\mathcal{A}$を近似アルゴリズムと呼ぶ.
+    \begin{enumerate}
+        \item $\mathcal{A}$によって近似解が多項式時間\footnote{この方程では多項式時間アルゴリズムの明確な定義はしない. 簡単に説明するならある程度実用的な速さで問題の解が求まるアルゴリズムと思ってもらえれば良い. }で得られる.
+        \item $S_{OPT}$と$\mathcal{A}$によって得られる近似解$S_{\mathcal{A}}$の$f$の値の比がどのような場合においても一定値より良くなることが理論的に保証される.
+    \end{enumerate}
+\end{Definition+}
+\begin{Theorem+}
+    近似アルゴリズム$\mathcal{A}$によって得られる近似解$S_{\mathcal{A}}$とする. この時
+    \begin{align*}
+        f(S_{\mathcal{A}})\leq f(S_{OPT})
+    \end{align*}
+    が成立する.
+    \begin{proof}
+        最大値の定義より言える.
+    \end{proof}
+\end{Theorem+}
+近似アルゴリズムが与えられた時, そのアルゴリズムが良い近似アルゴリズかどうか判定するのには色々な
+ものがあるだろうが, その一つに近似アルゴリズムが最適解にどれだけ近い値を出せているのかというものが考えられる. そこで近似率というものを定義する.
+\begin{Definition+}(近似率)\\
+    $ 0< \alpha \leq 1$と定数とし, 近似アルゴリズム$\mathcal{A}$によって得られる近似解$S_{\mathcal{A}}$とする. 
+    \begin{align*}
+        f(S_{\mathcal{A}})\leq \alpha(S_{OPT})
+    \end{align*}
+    が成立する最大の$\alpha$を$\mathcal{A}$の近似率と呼ぶ.
+\end{Definition+}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width = 100mm]{Graph1_houtei.png}
+    \caption{グラフ1}
+\end{figure}
+\subsection{貪欲法}
+ 貪欲法(Greedy algorithm)というアルゴリズムを利用する. 貪欲法とは
+「その場における最適な解を選択する」というアルゴリズムである. 今回の問題においては
+\begin{align*}
+    S_{i} = S_{i - 1}\cup\mathop{\rm arg~max}\limits_{e\in V}\Delta_{f}(e~|~S_{i - 1})\hspace{15pt}(S_{0} = \phi)
+\end{align*}
+を満たす$V$の部分集合列$S_{1}$, $S_{2}$, $\cdots$, $S_{k}(0<k\leq |V|)$を決定することに他ならない. ただし, $\mathop{\rm arg~max}\limits_{e\in V}\Delta_{f}(e~|~S_{i - 1})$の元が2つ以上の場合はどれか一つを選ぶものとする. 
+また、このアルゴリズムは多項式時間アルゴリズムである. (本方程では多項式時間アルゴリズムの明確な定義はしていないためこの主張は証明をせず認めることにする.) 
+\begin{Proposition+}
+$S_{1}$, $S_{2}$$\cdots$, $S_{k}$を貪欲法によって選ばれた$V$の部分集合列とする. この時
+    \begin{align*}
+        f(S_{1})\leq f(S_{2})\leq \cdots \leq f(S_{k})
+    \end{align*}
+    が成立する.
+    \begin{proof}
+        $S_{1}\subset S_{2}\subset \cdots S_{K}$ と$f$の単調性より言える.
+    \end{proof}
+\end{Proposition+}
+
+\subsection{貪欲法の近似率}
+いよいよ本方程の主定理である貪欲法の近似定理\footnote{この名前は著者が勝手につけたものである.}についてのべて行く.
+\begin{Lemma+}
+    $f$を劣モジュラ関数とする. この時
+    \begin{align*}
+        \forall S, T\subset V, S\subset T\implies f(S) - f(T)\leq \sum_{e\in T - S}\Delta_{f}(e|S)
+    \end{align*}
+    が成立する.
+\end{Lemma+}
+\begin{Lemma+}
+    $S_{1}$, $S_{2}$$\cdots$, $S_{k}$を貪欲法によって選ばれた$V$の部分集合列とする. この時
+    \begin{eqnarray*}
+        \forall l\in\{0, 1, 2, \cdots, k - 1\}, f(S_{l + 1}) -f(S_{l})&\geq& \frac{1}{|S_{OPT} - S_{l}|}(f(S_{OPT}) - f(S_{l})) \\
+                                                               &\geq& \frac{1}{k}(f(S_{OPT}) - f(S_{l}))
+    \end{eqnarray*}
+    が成立する.
+\end{Lemma+}
+この二つの補題の証明については参考文献の[1]番や[2]番を見て欲しい.
+\begin{Lemma+}
+    \begin{align*}
+        \forall x\in\R, 1 - x\leq e^{-x}
+    \end{align*}
+    が成立する.
+\end{Lemma+}
+%主定理
+\begin{Theorem+}(貪欲法の近似定理, Nemhauser)\\
+    $S_{1}$, $S_{2}$$\cdots$, $S_{k}$を貪欲法によって選ばれた$V$の部分集合列とする. この時
+    \begin{align*}
+        \forall l\in\{1, 2, \cdots, k\}, f(S_{l}) \geq\left (1 - e^{-\frac{l}{k}}\right)f(S_{OPT})
+    \end{align*}
+    が成立する. 
+    \begin{proof}
+        ${\bf Lemma 3.7.}$より
+        \begin{align*}
+            \forall l\in\{0, 1, 2, \cdots, k - 1\}, f(S_{OPT}) - f(S_{l})\leq k(f(S_{l+1}) - f(S_{l}))  
+        \end{align*}
+        が成立する. $l\in\{0, 1, 2, \cdots, k - 1\}$を任意にとり, 各$i\in\{0, 1, 2, \cdots, k - 1\}$に対して$\delta_{i} = f(S_{OPT}) - f(S_{i})$ とする. すると
+        \begin{align*}
+            \delta_{l+1}\leq\left(1 - \frac{1}{k}\right)\delta_{l}
+        \end{align*}
+        である. ここで$f$の非負性より$\delta_{0} = f(S_{OPT}) - f(\phi)\leq f(S_{OPT})$であり, ${\bf Lemma 3.8.}$より
+        \begin{align*}
+            \delta_{l}\leq \left(1 - \frac{1}{k}\right)^{l}\delta_{0}\leq e^{-\frac{l}{k}}f(S_{OPT})
+        \end{align*}
+        が成立する. ここで, $l$は任意であることと$\delta_{l}$の定義より
+        \begin{align*}
+            \forall l\in\{1, 2, \cdots, k\}, f(S_{l}) \geq\left (1 - e^{-\frac{l}{k}}\right)f(S_{OPT})
+        \end{align*}
+        が成立する.
+    \end{proof}
+\end{Theorem+}
+この定理より貪欲法が近似アルゴリズムであることと, 貪欲法の近似率が $1 - \frac{1}{e} \approx 0.62$ということがわかる.
+\section{応用例}
+ここでは単調劣モジュラ関数の応用例について紹介をする. 詳細については参考文献を見て欲しい.
+\begin{itemize}
+    \item 口コミ効果最大化
+    \item 文章要約問題
+    \item センサー配置問題
+    \item 施設の配置問題
+    \item 機械学習
+\end{itemize}
+このように単調劣モジュラ関数には様々な応用があり, 今回紹介した「(個数制約下での)単調劣モジュラ関数最大化問題」の他にも
+ナップザック制約下での単調劣モジュラ関数最大化問題, マトロイド制約下での単調劣モジュラ関数最大化問題などがある. また単調劣モジュラ関数最小化問題
+というものもある. 興味のある読者は調べてみると面白いかもしれない.
+\section{終わりに}
+今回の方程では私が学びたい分野である数理情報学の入門として「単調劣モジュラ関数最大化問題」を2018年度の題材とさせていただいた. 
+書き終わってみれば「多項式時間アルゴリズム」などの計算機科学への知識が足りず厳密な議論ができなかったことや応用例の詳細について書けなかったのが
+後悔である. 今回は初めてセミナーなしで数学書を読んだので, 改めてセミナーの重要性を感じることができた. 最後にここまで僕のセミナー
+に付き合ってくれた全ての先輩や同期に感謝を申し上げるとともに, 2018年度の方程を完了とする.
 
 
-
-
-
-
-% まあ, ここまでよくわからない Submodular function というものを定義して来たが, 読者の中には
-% 「$V$は有限集合なんだから, $V$の要素を入っているか入っていないかで分けて全通り試せば良い.」 と思う人もいるかもしれない.
-% 実際にそれをC++で実装すると以下のようになる.
-% \begin{lstlisting}[caption=C++のソースコード,label=ほげ]
-% #include<iostream>
-% #include<math.h>
-% using namespace std;
-% #define MAX_N 10
-% int main(){
-%     int f_V[MAX_N];
-%     for(int i = 0;i < MAX_N; i++){
-%         if(i % 3 ==0){
-%             f_V[i] = -2 * i + 1; 
-%         }else{
-%             f_V[i] = 2 * i + 1; 
-%         }
-%     }
-%     int sum[1024] = {0};
-%     for(int i = 0; i < pow(2, MAX_N); i++){
-%         for(int k = 0; k < MAX_N; k++){
-%             if(i & 1<<k){
-%                 sum[i] += f_V[k];
-%             }
-%         }
-%     }
-%     for(int i = 0; i < 1024; i++){
-%         cout << sum[i] << " ";
-%     }
-%     cout << endl;
-%     return 0;
-% }
-%  \end{lstlisting}
-%  このコードでは, $|V| = 10$の場合を考えて実装している. このように$|V|$が小さい場合であればこのような方法でも
-%  問題はない. しかしながら, $|V| = 10000$の場合はどうだろうか? 調べる候補の数は$2^{10}$から$2^{10000}$へと
-%  跳ね上がる. この量を全て調べ上げるのは現実的に不可能である.(100年とか待てるなら別ですが...)\\
-%  というわけで, 集合関数$f$が最大となる$V$の部分集合$S$を効率に求めることが必要なのである.
 
 
 
@@ -281,5 +446,7 @@
     \bibitem{キー2} https://las.inf.ethz.ch/files/krause12survey.pdf・Andreas Krause, Daniel Golovin
     \bibitem{キー3} https://www.openu.ac.il/personal\verb|_|sites/moran-feldman/publications/Handbook2018.pdf・Niv Buchbinder, Moran Feldman
     \bibitem{キー4} https://repository.upenn.edu/cgi/viewcontent.cgi?article=2034\verb|&|context=cis\verb|_|reports・Jennifer Gillenwater
+    \bibitem{キー5} http://imi.kyushu-u.ac.jp/~kamiyama/opt2012\verb|_|ppt/nagano.pdf・永野 清仁・2012
+    \bibitem{キー6} https://www.youtube.com/watch?v=Z7eMzSHGGAE\verb|&|t=24s・アルゴリズムが世界を変える 3.0
   \end{thebibliography}
 \end{document}
