@@ -103,7 +103,7 @@
 \newcommand{\dl}{\delta}
 \newcommand{\pphi}{\varphi}
 \newcommand{\ti}{\tilde}
-    \title{Submodular function maximization and Greedy algorithm}
+    \title{単調劣モジュラ関数最大化問題と貪欲法}
     \author{数理科学科 2回生 小泉 孝弥}
     \date{}
 \begin{document}
@@ -144,44 +144,44 @@
      \end{align*}
     \end{Definition+}
     また任意の有限集合$S$に対して$|S|$で集合$S$の要素数を表す.    
-\section{Submodular function}
+\section{劣モジュラ関数}
 まず劣モジュラ関数を定義して行く.
 \begin{Definition+}(集合関数)\\
    $f$をVの冪集合$2^{V} = \{S~|~S\subset V\}$から$\R$への写像とする. この時$f$を集合関数と呼ぶ.
 \end{Definition+}
-\begin{Definition+}(Discreate derivative)\\
+\begin{Definition+}(離散微分)\\
     $f$を集合関数とする. $S$を$V$の部分集合とし$e$を$V$の元とする. この時$f$の$S$での
-    Discreate derivativeを
+    離散微分(Discreate derivative)を
     \begin{align*}
         \Delta_{f}(e | S) := f(S\cup\{e\}) - f(S)
     \end{align*}
     と定義する.
 \end{Definition+}
-\begin{Definition+}(Submodular function)\\
-    $f$を集合関数とする. $f$がSubmodular functionであるとは
+\begin{Definition+}(劣モジュラ関数)\\
+    $f$を集合関数とする. $f$が劣モジュラ関数(Submodular function)であるとは
     \begin{align*}
-        \forall A, B\subset V, \forall e\in V,A\subset B かつe\in V - B\Longrightarrow \Delta_{f}(e | A)\geq\Delta_{f}(e | B)
+        \forall A, B\subset V, \forall e\in V, ~(A\subset B かつe\in V - B)\Longrightarrow \Delta_{f}(e | A)\geq\Delta_{f}(e | B)
     \end{align*}
     を満たすことをいう.
 \end{Definition+}
 \begin{Theorem+}$f$を集合関数とする. この時
     \begin{enumerate}
-        \item $f$は Submodular function である.
+        \item $f$は劣モジュラ関数である.
         \item $\forall A, B\subset V, f(A\cap B) + f(A\cup B)\leq f(A) + f(B)$ 
     \end{enumerate}
     は同値である.
     \begin{proof}
         1.$\implies$2.) 任意に$A, B\subset V$をとる. $A - B = \phi$の時, すなわち
-        $A\subset B$の時は$A\cap B = A$, $A\cup B = B$より成立するので, $A - B\neq\phi$の時を考える.
-        $| A - B| = m$とし$A - B = \{i_{1}, i_{2}, \cdots, i_{m}\}$とすると$A_{0} = A\cap B$, $B_{0} = B$として
+        $A\subset B$の時は$A\cap B = A$, $A\cup B = B$より成立する. そこで, $A - B\neq\phi$の時を考える.
+        $| A - B| = m$とし$A - B = \{i_{1}, i_{2}, \cdots, i_{m}\}$とする. $A_{0} = A\cap B$, $B_{0} = B$として
         $A_{k}, B_{k} (k\in\{1, 2, \cdots, m\})$を以下のように定義する.
         \begin{align*}
             A_{1} = A_{0}\cup\{i_{1}\}, ~~~~~ A_{2} = A_{0}\cup\{i_{1}, i_{2}\}, \cdots, ~~~~~ A_{m} = A_{0}\cup\{i_{1}, i_{2}, \cdots, i_{m}\}\\
             B_{1} = B_{0}\cup\{i_{1}\}, ~~~~~ B_{2} = B_{0}\cup\{i_{1}, i_{2}\}, \cdots, ~~~~~ B_{m} = B_{0}\cup\{i_{1}, i_{2}, \cdots, i_{m}\}
         \end{align*}
-        この時$A_{m} = A$, $B_{m} = A\cup B$である. また,
+        この時$A_{m} = A$, $B_{m} = A\cup B$である. また各$k\in\{1, 2, \cdots, m\}$に対して
         \begin{align*}
-            \forall k\in\{1, 2, \cdots, m\}, A_{k - 1}\subset B_{k-1}かつA_{k} = A_{k-1}\cup\{i_{k}\}かつB_{k} = B_{k-1}\cup\{i_{k}\}
+             A_{k - 1}\subset B_{k-1}かつA_{k} = A_{k-1}\cup\{i_{k}\}かつB_{k} = B_{k-1}\cup\{i_{k}\}
         \end{align*}
         が成立するので1.より
         \begin{align*}
@@ -221,11 +221,11 @@
         \begin{align*}
             \forall A, B\subset V, \forall e\in V,A\subset B かつe\in V - B\Longrightarrow \Delta_{f}(e | A)\geq\Delta_{f}(e | B)
         \end{align*}
-        したがって, $f$は Submodular function である.
+        したがって, $f$は劣モジュラ関数である.
     \end{proof}
 \end{Theorem+}
-\begin{Definition+}(Monotone)\\
-    $f$を集合関数とする. $f$が Monotone であるとは
+\begin{Definition+}(単調)\\
+    $f$を集合関数とする. $f$が単調(Monotone)であるとは
     \begin{align*}
         \forall S, T\subset V, S\subset T\Longrightarrow f(S)\leq f(T)
     \end{align*}
@@ -234,7 +234,7 @@
 \begin{Theorem+}
     $f$を集合関数とする.このとき
     \begin{enumerate}
-        \item $f$が Monotone である.
+        \item $f$が単調である.
         \item $\forall S\subset V, \forall e\in V, \Delta_{f}(e | S)\geq 0$
     \end{enumerate}
     は同値である.
@@ -242,19 +242,16 @@
         証明は読者への演習問題とする.
     \end{proof}
 \end{Theorem+}
-\begin{Problem+}(読者への演習問題1)\\
-    {\bf Theorem 2.6.}を証明せよ.
-\end{Problem+}
 \begin{Theorem+}
-    $f_{1}, f_{2}, f$を Submodular function . $\alpha$を正の実数とする. この時
+    $f_{1}, f_{2}, f$を劣モジュラ関数 . $\alpha$を正の実数とする. この時
     \begin{enumerate}
-        \item $f_{1} + f_{2} $ は Submodular function.
-        \item $\alpha f$は Submodular function.
+        \item $f_{1} + f_{2} $ は劣モジュラ関数.
+        \item $\alpha f$は劣モジュラ関数.
     \end{enumerate}
     が成立する.
     \begin{proof}
         任意に$V$の部分集合$A$, $B$と$V$の元$e$をとる. $A\subset B$, $e\in V - B$と仮定する.\\
-        1. $f_{1}$, $f_{2}$は Submodular function だから
+        1. $f_{1}$, $f_{2}$は劣モジュラ関数 だから
         \begin{align*}
             \Delta_{f_{1}}(e|A)\geq \Delta_{f_{1}}(e|B)
         \end{align*}
@@ -269,8 +266,8 @@
         \begin{align*}
             \Delta_{f_{1} + f_{2}}(e|A)\geq \Delta_{f_{1} + f_{2}}(e|B)
         \end{align*}
-        したがって, $f_{1} + f_{2}$は Submodular function である.\\
-        2. $\alpha > 0$を任意にとる. $f$は Submodular function であるので
+        したがって, $f_{1} + f_{2}$は劣モジュラ関数である.\\
+        2. $\alpha > 0$を任意にとる. $f$は劣モジュラ関数であるので
         \begin{align*}
             \Delta_{f}(e|A)\geq \Delta_{f}(e|B)
         \end{align*}
@@ -282,37 +279,37 @@
         \begin{align*}
             \Delta_{\alpha f}(e|A)\geq \Delta_{\alpha f}(e|B)
         \end{align*}
-        したがって$\alpha f$ は Submodular function である.
+        したがって$\alpha f$ は劣モジュラ関数である.
      \end{proof}
 \end{Theorem+}
-\begin{Definition+}(Monotone Submodular function)\\
-    集合関数$f$が Submodular かつ Monotone であるとき$f$を Monotone Submodular function　と言う.
+\begin{Definition+}(単調劣モジュラ関数)\\
+    集合関数$f$が劣モジュラかつ単調であるとき$f$を単調劣モジュラ関数(Monotone Submodular function)と言う.
 \end{Definition+}
 \section{単調劣モジュラ関数最大化問題と貪欲法}
 この節では$f$を非負の単調劣モジュラ関数とする.
 \subsection{単調劣モジュラ関数最大化問題}
  前節では劣モジュラ関数の定義および様々な性質を述べてきた. この節での目的は単調劣モジュラ関数を
- ある条件のもと最大化\footnote{ここでの最大化とは出来るだけ関数の最大値に近づくような手法のことであり, 実際に関数の最大値が出る保証はない.}するようなアルゴリズムを与えることである.
+ ある条件のもと最大化\footnote{ここでの最大化とは出来るだけ関数の最大値に近づくような手法のことであり, 実際に関数の最大値が出る保証はない.}する$V$の部分集合
+ $S$を見つけるアルゴリズムを与えることである.
  そして, この節では特に集合
  \begin{align*}
-    \{ f(S)~|~S\subset V\text{ and }|S| \leq k\}\hspace{30pt} (0< k\leq |V|, k\in\N)
+    \{ f(S)~|~S\subset V\text{ and }|S| \leq k\}
  \end{align*} 
- が最大値をとるときの$V$の部分集合$S$を見つけることが目標である(そのような$S$を最適解と呼ぶ). 
+ が最大値をとるときの$V$の部分集合$S$を見つけることが目標である(そのような$S$を最適解と呼ぶ). また$k$は$0<k\leq |V|$を満たす定数である. 
  この問題をこの方程では単調劣モジュラ関数最大化問題(Submodular function maximization problem)と呼ぶことにする. 
 
  \subsection{近似アルゴリズム}
 単調劣モジュラ関数最大化問題を解決するための手法について述べる. 
-まず, 最初に全探索アルゴリズムを考える. これは「$V$の各要素を
-含むか含まないかで探索する\footnote{実装はbit全探索というものをよく用いる}」アルゴリズムである. 
+まず, 最初に全探索アルゴリズムを考える. これは「制約下でのあらゆる可能性を全て探索する\footnote{実装はbit全探索というものをよく用いる}」アルゴリズムである. 
 このアルゴリズムであれば確実に解が出せるので単調劣モジュラ関数最大化問題を解決することができる. 
 しかしながら, このアルゴリズムでは$V$の部分集合全てを調べる必要があるため$2^{|V|}$回の計算を行う必要がある.(簡単のため$k = |V|$とした.)
 $y = 2^x$という関数は以下のグラフ1を見れば分かる通り$x$がある程度大きくなると$y$は非常な大きな値となる. 
-これではいくらコンピュータを用いたとしても解くのは不可能である. そこで単調劣モジュラ関数最大化問題の真の解を求めることを諦め
+これではいくらコンピュータを用いたとしても解くのは不可能である. そこで単調劣モジュラ関数最大化問題の真の解を求めることを諦め,
 近似解を求めるために「近似アルゴリズム」というものを利用する. 
 \begin{Theorem+}
     単調劣モジュラ関数最大化問題には最適解が存在する.
 \begin{proof}
-    冒頭の定理より言える.
+    ${\bf Theorem 1.1.}$より言える.
 \end{proof}
 これ以降単調劣モジュラ関数最大化問題の最適解を$S_{OPT}$と表記する.
 \end{Theorem+}
@@ -320,7 +317,7 @@ $y = 2^x$という関数は以下のグラフ1を見れば分かる通り$x$が�
     以下の2つのことを満たすアルゴリズム$\mathcal{A}$を近似アルゴリズムと呼ぶ.
     \begin{enumerate}
         \item $\mathcal{A}$によって近似解が多項式時間\footnote{この方程では多項式時間アルゴリズムの明確な定義はしない. 簡単に説明するならある程度実用的な速さで問題の解が求まるアルゴリズムと思ってもらえれば良い. }で得られる.
-        \item $S_{OPT}$と$\mathcal{A}$によって得られる近似解$S_{\mathcal{A}}$の$f$の値の比がどのような場合においても一定値より良くなることが理論的に保証される.
+        \item $S_{OPT}$と$\mathcal{A}$によって得られる近似解$S_{\mathcal{A}}$の$f$の値の比が一定値より高くなることが理論的に保証される.
     \end{enumerate}
 \end{Definition+}
 \begin{Theorem+}
@@ -334,7 +331,7 @@ $y = 2^x$という関数は以下のグラフ1を見れば分かる通り$x$が�
     \end{proof}
 \end{Theorem+}
 近似アルゴリズムが与えられた時, そのアルゴリズムが良い近似アルゴリズかどうか判定するのには色々な
-ものがあるだろうが, その一つに近似アルゴリズムが最適解にどれだけ近い値を出せているのかというものが考えられる. そこで近似率というものを定義する.
+ものがある. その一つに近似アルゴリズムが最適解にどれだけ近い値を出せているのかというものが考えられる. そこで近似率というものを定義する.
 \begin{Definition+}(近似率)\\
     $ 0< \alpha \leq 1$と定数とし, 近似アルゴリズム$\mathcal{A}$によって得られる近似解$S_{\mathcal{A}}$とする. 
     \begin{align*}
@@ -348,7 +345,7 @@ $y = 2^x$という関数は以下のグラフ1を見れば分かる通り$x$が�
     \caption{グラフ1}
 \end{figure}
 \subsection{貪欲法}
- 貪欲法(Greedy algorithm)というアルゴリズムを利用する. 貪欲法とは
+ 今回は単調劣モジュラ関数最大化問題を解くための近似アルゴリズムとして貪欲法(Greedy algorithm)というアルゴリズムを利用する. 貪欲法とは
 「その場における最適な解を選択する」というアルゴリズムである. 今回の問題においては
 \begin{align*}
     S_{i} = S_{i - 1}\cup\mathop{\rm arg~max}\limits_{e\in V}\Delta_{f}(e~|~S_{i - 1})\hspace{15pt}(S_{0} = \phi)
@@ -371,14 +368,15 @@ $S_{1}$, $S_{2}$$\cdots$, $S_{k}$を貪欲法によって選ばれた$V$の部�
 \begin{Lemma+}
     $f$を劣モジュラ関数とする. この時
     \begin{align*}
-        \forall S, T\subset V, S\subset T\implies f(S) - f(T)\leq \sum_{e\in T - S}\Delta_{f}(e|S)
+        \forall S, T\subset V,~ S\subset T\implies f(S) - f(T)\leq \sum_{e\in T - S}\Delta_{f}(e|S)
     \end{align*}
     が成立する.
 \end{Lemma+}
 \begin{Lemma+}
-    $S_{1}$, $S_{2}$$\cdots$, $S_{k}$を貪欲法によって選ばれた$V$の部分集合列とする. この時
+    $S_{1}$, $S_{2}$$\cdots$, $S_{k}$を貪欲法によって選ばれた$V$の部分集合列とする. この時任意の$l\in\{0, 1, 2, \cdots, k - 1\}$
+    に対して 
     \begin{eqnarray*}
-        \forall l\in\{0, 1, 2, \cdots, k - 1\}, f(S_{l + 1}) -f(S_{l})&\geq& \frac{1}{|S_{OPT} - S_{l}|}(f(S_{OPT}) - f(S_{l})) \\
+          f(S_{l + 1}) -f(S_{l})&\geq& \frac{1}{|S_{OPT} - S_{l}|}(f(S_{OPT}) - f(S_{l})) \\
                                                                &\geq& \frac{1}{k}(f(S_{OPT}) - f(S_{l}))
     \end{eqnarray*}
     が成立する.
@@ -386,7 +384,7 @@ $S_{1}$, $S_{2}$$\cdots$, $S_{k}$を貪欲法によって選ばれた$V$の部�
 この二つの補題の証明については参考文献の[1]番や[2]番を見て欲しい.
 \begin{Lemma+}
     \begin{align*}
-        \forall x\in\R, 1 - x\leq e^{-x}
+        \forall x\in\R, ~1 - x\leq e^{-x}
     \end{align*}
     が成立する.
 \end{Lemma+}
@@ -394,25 +392,22 @@ $S_{1}$, $S_{2}$$\cdots$, $S_{k}$を貪欲法によって選ばれた$V$の部�
 \begin{Theorem+}(貪欲法の近似定理, Nemhauser)\\
     $S_{1}$, $S_{2}$$\cdots$, $S_{k}$を貪欲法によって選ばれた$V$の部分集合列とする. この時
     \begin{align*}
-        \forall l\in\{1, 2, \cdots, k\}, f(S_{l}) \geq\left (1 - e^{-\frac{l}{k}}\right)f(S_{OPT})
+        \forall l\in\{1, 2, \cdots, k\}, ~f(S_{l}) \geq\left (1 - e^{-\frac{l}{k}}\right)f(S_{OPT})
     \end{align*}
     が成立する. 
     \begin{proof}
-        ${\bf Lemma 3.7.}$より
-        \begin{align*}
-            \forall l\in\{0, 1, 2, \cdots, k - 1\}, f(S_{OPT}) - f(S_{l})\leq k(f(S_{l+1}) - f(S_{l}))  
-        \end{align*}
-        が成立する. $l\in\{0, 1, 2, \cdots, k - 1\}$を任意にとり, 各$i\in\{0, 1, 2, \cdots, k - 1\}$に対して$\delta_{i} = f(S_{OPT}) - f(S_{i})$ とする. すると
+         $l\in\{0, 1, 2, \cdots, k - 1\}$を任意にとり, 各$i\in\{0, 1, 2, \cdots, k - 1\}$に対して$\delta_{i} = f(S_{OPT}) - f(S_{i})$ とする. すると
+         ${\bf Lemma 3.7.}$より
         \begin{align*}
             \delta_{l+1}\leq\left(1 - \frac{1}{k}\right)\delta_{l}
         \end{align*}
-        である. ここで$f$の非負性より$\delta_{0} = f(S_{OPT}) - f(\phi)\leq f(S_{OPT})$であり, ${\bf Lemma 3.8.}$より
+        である. この不等式と$f$の非負性より$\delta_{0} = f(S_{OPT}) - f(\phi)\leq f(S_{OPT})$であることと, ${\bf Lemma 3.8.}$を用いれば
         \begin{align*}
             \delta_{l}\leq \left(1 - \frac{1}{k}\right)^{l}\delta_{0}\leq e^{-\frac{l}{k}}f(S_{OPT})
         \end{align*}
-        が成立する. ここで, $l$は任意であることと$\delta_{l}$の定義より
+        が従う. $\delta_{l}$の定義より
         \begin{align*}
-            \forall l\in\{1, 2, \cdots, k\}, f(S_{l}) \geq\left (1 - e^{-\frac{l}{k}}\right)f(S_{OPT})
+            f(S_{l}) \geq\left (1 - e^{-\frac{l}{k}}\right)f(S_{OPT})
         \end{align*}
         が成立する.
     \end{proof}
@@ -427,13 +422,13 @@ $S_{1}$, $S_{2}$$\cdots$, $S_{k}$を貪欲法によって選ばれた$V$の部�
     \item 施設の配置問題
     \item 機械学習
 \end{itemize}
-このように単調劣モジュラ関数には様々な応用があり, 今回紹介した「(個数制約下での)単調劣モジュラ関数最大化問題」の他にも
+このように単調劣モジュラ関数には様々な応用がある. 今回紹介した「(個数制約下での)単調劣モジュラ関数最大化問題」の他にも,
 ナップザック制約下での単調劣モジュラ関数最大化問題, マトロイド制約下での単調劣モジュラ関数最大化問題などがある. また単調劣モジュラ関数最小化問題
 というものもある. 興味のある読者は調べてみると面白いかもしれない.
 \section{終わりに}
 今回の方程では私が学びたい分野である数理情報学の入門として「単調劣モジュラ関数最大化問題」を2018年度の題材とさせていただいた. 
 書き終わってみれば「多項式時間アルゴリズム」などの計算機科学への知識が足りず厳密な議論ができなかったことや応用例の詳細について書けなかったのが
-後悔である. 今回は初めてセミナーなしで数学書を読んだので, 改めてセミナーの重要性を感じることができた. 最後にここまで僕のセミナー
+心残りである. 今回は初めてセミナーなしで数学書を読んだので, 改めてセミナーの重要性を感じることができた. 最後にここまで僕のセミナー
 に付き合ってくれた全ての先輩や同期に感謝を申し上げるとともに, 2018年度の方程を完了とする.
 
 
