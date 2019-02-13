@@ -145,7 +145,7 @@
     \end{Definition+}
     また任意の有限集合$S$に対して$|S|$で集合$S$の要素数を表す.    
 \section{劣モジュラ関数}
-まず劣モジュラ関数を定義して行く.
+まず劣モジュラ関数を定義して行く. もしこれらの定義を見てよくわからないと感じた読者は参考文献[6]の動画が良い参考になる.
 \begin{Definition+}(集合関数)\\
    $f$をVの冪集合$2^{V} = \{S~|~S\subset V\}$から$\R$への写像とする. この時$f$を集合関数と呼ぶ.
 \end{Definition+}
@@ -164,6 +164,44 @@
     \end{align*}
     を満たすことをいう.
 \end{Definition+}
+\begin{Example+}(カバー関数)\\
+    劣モジュラ関数の具体例としてカバー関数(cover function)というものがある. カバー関数$f: 2^{V}\to\R$とは
+    \begin{align*}
+        f(T) = \left|\bigcup_{i\in T}S_{i}\right|\hspace{15pt}(T\subset V)
+    \end{align*}
+    で定義される関数である. ただし$S_{i}(1 \leq i\leq |V|)$は$\R^{2}$の有限部分集合である. この関数が劣モジュラ関数
+    であることをしめす.
+    \begin{proof}
+        任意に$V$の部分集合$A$, $B$と$e\in V$を取る. $A\subset B$, $e\in V - B$と仮定する.
+        まず
+        \begin{align*}
+            \bigcup_{i\in B\cup\{e\}}S_{i} - \bigcup_{i\in B}S_{i}\subset\bigcup_{i\in A\cup\{e\}}S_{i} - \bigcup_{i\in A}S_{i}
+        \end{align*}
+        であることを示す. 任意に$\dip \bigcup_{i\in B\cup\{e\}}S_{i} - \bigcup_{i\in B}S_{i}$の元$x$をとる.
+        \begin{align*}
+            x\in\bigcup_{i\in B\cup\{e\}}S_{i} - \bigcup_{i\in B}S_{i}
+        \end{align*}
+        \begin{align*}
+            x\in\bigcup_{i\in B\cup\{e\}}S_{i} かつ x\notin\bigcup_{i\in B}S_{i}
+        \end{align*}
+        ここで$A\subset B$であるので
+        \begin{align*}
+            x\in eかつ\forall i\in x\in A, x\notin S_{i} 
+        \end{align*}
+        \begin{align*}
+            x\in\bigcup_{i\in A\cup\{e\}}S_{i} - \bigcup_{i\in A}S_{i}
+        \end{align*}
+        したがって, 
+        \begin{align*}
+            \bigcup_{i\in B\cup\{e\}}S_{i} - \bigcup_{i\in B}S_{i}\subset\bigcup_{i\in A\cup\{e\}}S_{i} - \bigcup_{i\in A}S_{i}
+        \end{align*}
+        である. これより
+        \begin{align*}
+            f(A\cup\{e\}) - f(A) \geq f(B\cup\{e\}) - f(B)
+        \end{align*}
+        が言える. したがって$f$は劣モジュラ関数である.
+    \end{proof}
+\end{Example+}
 \begin{Theorem+}$f$を集合関数とする. この時
     \begin{enumerate}
         \item $f$は劣モジュラ関数である.
@@ -176,8 +214,8 @@
         $| A - B| = m$とし$A - B = \{i_{1}, i_{2}, \cdots, i_{m}\}$とする. $A_{0} = A\cap B$, $B_{0} = B$として
         $A_{k}, B_{k} (k\in\{1, 2, \cdots, m\})$を以下のように定義する.
         \begin{align*}
-            A_{1} = A_{0}\cup\{i_{1}\}, ~~~~~ A_{2} = A_{0}\cup\{i_{1}, i_{2}\}, \cdots, ~~~~~ A_{m} = A_{0}\cup\{i_{1}, i_{2}, \cdots, i_{m}\}\\
-            B_{1} = B_{0}\cup\{i_{1}\}, ~~~~~ B_{2} = B_{0}\cup\{i_{1}, i_{2}\}, \cdots, ~~~~~ B_{m} = B_{0}\cup\{i_{1}, i_{2}, \cdots, i_{m}\}
+            A_{1} = A_{0}\cup\{i_{1}\}, ~~~~~ A_{2} = A_{0}\cup\{i_{1}, i_{2}\},~~~~~  \cdots, ~~~~~ A_{m} = A_{0}\cup\{i_{1}, i_{2}, \cdots, i_{m}\}\\
+            B_{1} = B_{0}\cup\{i_{1}\}, ~~~~~ B_{2} = B_{0}\cup\{i_{1}, i_{2}\},~~~~~  \cdots, ~~~~~ B_{m} = B_{0}\cup\{i_{1}, i_{2}, \cdots, i_{m}\}
         \end{align*}
         この時$A_{m} = A$, $B_{m} = A\cup B$である. また各$k\in\{1, 2, \cdots, m\}$に対して
         \begin{align*}
@@ -195,11 +233,11 @@
         \begin{align*}
             f(A_{m}) - f(A_{0})\geq f(B_{m}) - f(B_{0})
         \end{align*}
-        となる. $A, B$は任意なので$A_{m} = A$, $B_{m} = A\cup B$, $B_{0} = B$より
+        となる. $A_{0} = A\cap B$, $A_{m} = A$, $B_{m} = A\cup B$, $B_{0} = B$より
         \begin{align*}
-            \forall A, B\subset V, f(A\cap B) + f(A\cup B)\leq f(A) + f(B)
+            f(A) - f(A\cap B)\geq f(A\cup B) - f(B)
         \end{align*}
-        が成立する.\\
+        $A$, $B$は任意より2.が成立する.\\
 
         2.$\implies$1.) 任意に$A, B\subset V$と$i\in V - B$を$A\subset B$となるようにとる. $A^{'} = A\cup \{i\}, B^{'} = B$とすると2.より
         \begin{align*}
@@ -215,19 +253,16 @@
         \end{align*}
         式を整理すると
         \begin{align*}
-            f(A\cup \{i\}) - f(A)\geq f(B\cup\{i\}) + f(B)
+            f(A\cup \{i\}) - f(A)\geq f(B\cup\{i\}) - f(B)
         \end{align*}
-        したがって, $A, B\subset V$と$i\in V - B$は任意だったので,
-        \begin{align*}
-            \forall A, B\subset V, \forall e\in V,A\subset B かつe\in V - B\Longrightarrow \Delta_{f}(e | A)\geq\Delta_{f}(e | B)
-        \end{align*}
-        したがって, $f$は劣モジュラ関数である.
+        すなわち$\Delta_{f}(i | A)\geq\Delta_{f}(i | B)$である. $A, B\subset V$と$i\in V - B$は任意だったので, 
+        $f$は劣モジュラ関数である.
     \end{proof}
 \end{Theorem+}
 \begin{Definition+}(単調)\\
     $f$を集合関数とする. $f$が単調(Monotone)であるとは
     \begin{align*}
-        \forall S, T\subset V, S\subset T\Longrightarrow f(S)\leq f(T)
+        \forall S, T\subset V,~ S\subset T\Longrightarrow f(S)\leq f(T)
     \end{align*}
     を満たすことを言う.
 \end{Definition+}
@@ -235,7 +270,7 @@
     $f$を集合関数とする.このとき
     \begin{enumerate}
         \item $f$が単調である.
-        \item $\forall S\subset V, \forall e\in V, \Delta_{f}(e | S)\geq 0$
+        \item $\forall S\subset V, \forall e\in V,~ \Delta_{f}(e | S)\geq 0$
     \end{enumerate}
     は同値である.
     \begin{proof}
@@ -243,7 +278,7 @@
     \end{proof}
 \end{Theorem+}
 \begin{Theorem+}
-    $f_{1}, f_{2}, f$を劣モジュラ関数 . $\alpha$を正の実数とする. この時
+    $f_{1}, f_{2}, f$を劣モジュラ関数. $\alpha$を正の実数とする. この時
     \begin{enumerate}
         \item $f_{1} + f_{2} $ は劣モジュラ関数.
         \item $\alpha f$は劣モジュラ関数.
@@ -443,5 +478,6 @@ $S_{1}$, $S_{2}$$\cdots$, $S_{k}$を貪欲法によって選ばれた$V$の部�
     \bibitem{キー4} https://repository.upenn.edu/cgi/viewcontent.cgi?article=2034\verb|&|context=cis\verb|_|reports・Jennifer Gillenwater
     \bibitem{キー5} http://imi.kyushu-u.ac.jp/~kamiyama/opt2012\verb|_|ppt/nagano.pdf・永野 清仁・2012
     \bibitem{キー6} https://www.youtube.com/watch?v=Z7eMzSHGGAE\verb|&|t=24s・アルゴリズムが世界を変える 3.0
+    \bibitem{キー7} https://tasusu.hatenablog.com/entry/2015/12/01/000608
   \end{thebibliography}
 \end{document}
